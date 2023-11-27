@@ -4,19 +4,39 @@ from django.forms.models import model_to_dict
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from products.serializers import ProductSerializer
 
 from products.models import Product
 
-@api_view(["GET", "POST",])
+
+
+@api_view(["POST",])
 def api_home(request, *args, **kwargs):
     """
     DRF API View
     """
-    model_data = Product.objects.all().order_by("?").first()
-    data = {}
-    if model_data:
-        data = model_to_dict(model_data, fields=["title", "price", "sale_price"])
-    return Response(data)
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        #instance = serializer.save()
+        #print(instance)
+        print(serializer.data)
+        return Response(serializer.data)
+    return Response({"invalid": "not good data."})
+
+
+
+
+# @api_view(["GET", "POST",])
+# def api_home(request, *args, **kwargs):
+#     """
+#     DRF API View
+#     """
+#     instance = Product.objects.all().order_by("?").first()
+#     data = {}
+#     if instance:
+#         # data = model_to_dict(model_data, fields=["title", "price", "sale_price"])
+#         data = ProductSerializer(instance).data
+#     return Response(data)
 
 
 
