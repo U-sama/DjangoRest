@@ -1,4 +1,4 @@
-from rest_framework import generics, mixins
+from rest_framework import generics, mixins, permissions, authentication
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -61,6 +61,9 @@ class productUpdateAPIView(generics.UpdateAPIView):
 class ProductListCreateAPIView(generics.ListCreateAPIView): # will create if it's POST and return all if GET
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication]
 
     def perform_create(self, serializer):
         print(serializer.validated_data)
