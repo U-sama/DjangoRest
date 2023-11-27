@@ -9,6 +9,25 @@ from django.shortcuts import get_object_or_404
 from .models import Product
 from .serializers import ProductSerializer
 
+
+class productDestroyAPIView(generics.DestroyAPIView): 
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_destroy (self, instance):
+        return super().perform_destroy(instance)
+
+class productUpdateAPIView(generics.UpdateAPIView): 
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if not instance.content:
+            instance.content = instance.title
+
 #class ProductCreateAPIView(generics.CreateAPIView): #Only create products
 class ProductListCreateAPIView(generics.ListCreateAPIView): # will create if it's POST and return all if GET
     queryset = Product.objects.all()
