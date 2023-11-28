@@ -20,7 +20,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView): # will create if it'
     #permission_classes = [permissions.DjangoModelPermissions]
     permission_classes = [permissions.IsAdminUser ,IsStaffEditorPermission]
     #authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
-    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    #authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
 
     def perform_create(self, serializer):
         print(serializer.validated_data)
@@ -43,6 +43,7 @@ class productMixinView(
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
+    permission_classes = [permissions.IsAdminUser ,IsStaffEditorPermission]
 
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
@@ -66,6 +67,7 @@ class productDestroyAPIView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
+    permission_classes = [permissions.IsAdminUser ,IsStaffEditorPermission]
 
     def perform_destroy (self, instance):
         return super().perform_destroy(instance)
@@ -74,6 +76,7 @@ class productUpdateAPIView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
+    permission_classes = [permissions.IsAdminUser ,IsStaffEditorPermission]
 
     def perform_update(self, serializer):
         instance = serializer.save()
@@ -87,6 +90,7 @@ class productDetailsAPIView(generics.RetrieveAPIView): # this will get the data 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     #lookup_field = 'id'
+    permission_classes = [permissions.IsAdminUser ,IsStaffEditorPermission]
 
 product_detail_view = productDetailsAPIView.as_view()
 
