@@ -8,6 +8,27 @@ from django.shortcuts import get_object_or_404
 
 from .models import Product
 from .serializers import ProductSerializer
+from .permissions import IsStaffEditorPermission
+
+
+class ProductListCreateAPIView(generics.ListCreateAPIView): # will create if it's POST and return all if GET
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    #permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    #permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [permissions.IsAdminUser ,IsStaffEditorPermission]
+    authentication_classes = [authentication.SessionAuthentication]
+
+    def perform_create(self, serializer):
+        print(serializer.validated_data)
+        title = serializer.validated_data.get("title")
+        content = serializer.validated_data.get("content") or None
+        
+        if content is None:
+            content = title
+        serializer.save(content=content, )
+
 
 
 #All in one
@@ -58,22 +79,7 @@ class productUpdateAPIView(generics.UpdateAPIView):
             instance.content = instance.title
 
 #class ProductCreateAPIView(generics.CreateAPIView): #Only create products
-class ProductListCreateAPIView(generics.ListCreateAPIView): # will create if it's POST and return all if GET
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    #permission_classes = [permissions.IsAuthenticated]
-    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    permission_classes = [permissions.DjangoModelPermissions]
-    authentication_classes = [authentication.SessionAuthentication]
 
-    def perform_create(self, serializer):
-        print(serializer.validated_data)
-        title = serializer.validated_data.get("title")
-        content = serializer.validated_data.get("content") or None
-        
-        if content is None:
-            content = title
-        serializer.save(content=content, )
 
 class productDetailsAPIView(generics.RetrieveAPIView): # this will get the data from the model according to the id provided
     queryset = Product.objects.all()
