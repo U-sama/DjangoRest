@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from .models import Product
 from .serializers import ProductSerializer
 from .permissions import IsStaffEditorPermission
+from api.authentication import TokenAuthentication
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView): # will create if it's POST and return all if GET
@@ -18,7 +19,8 @@ class ProductListCreateAPIView(generics.ListCreateAPIView): # will create if it'
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     #permission_classes = [permissions.DjangoModelPermissions]
     permission_classes = [permissions.IsAdminUser ,IsStaffEditorPermission]
-    authentication_classes = [authentication.SessionAuthentication]
+    #authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
 
     def perform_create(self, serializer):
         print(serializer.validated_data)
