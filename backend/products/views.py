@@ -21,6 +21,8 @@ class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAP
         print(serializer.validated_data)
         title = serializer.validated_data.get("title")
         content = serializer.validated_data.get("content") or None
+        #email = serializer.validated_data.pop("email")
+        #print(f"Poped email in view: {email}")
         
         if content is None:
             content = title
