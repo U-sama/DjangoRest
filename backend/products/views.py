@@ -10,10 +10,10 @@ from .models import Product
 from .serializers import ProductSerializer
 from api.permissions import IsStaffEditorPermission
 from api.authentication import TokenAuthentication
-from api.mixins import StaffEditorPermissionMixin
+from api.mixins import StaffEditorPermissionMixin, UserQueySetMixin
 
 
-class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView): # will create if it's POST and return all if GET
+class ProductListCreateAPIView(UserQueySetMixin ,StaffEditorPermissionMixin, generics.ListCreateAPIView): # will create if it's POST and return all if GET
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -26,7 +26,16 @@ class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAP
         
         if content is None:
             content = title
-        serializer.save(content=content, )
+        serializer.save(content=content,user = self.request.user )
+
+    # def get_queryset(self, *args, **kwargs):
+    #     qs =  super().get_queryset(*args, **kwargs)
+    #     request = self.request
+    #     user = request.user
+    #     if not user.is_authenticated:
+    #         return Product.objects.none()
+    #     return qs.filter(user=user)
+    
 
 
 
