@@ -19,4 +19,13 @@ if auth_response.status_code == 200:
 
     response = requests.get(endpoint, headers=headers) #will get all the product
 
-    print(response.json())
+    data = response.json()
+    print(data)
+
+    # handelling pagination
+    next_url = data['next']
+    results = data['results']
+    print()
+    if next_url is not None:
+        get_response = requests.get(next_url, headers=headers) #will get all the product
+        print()
